@@ -1,3 +1,4 @@
+import '../models/add_new_patient_model.dart';
 import '../models/login_model.dart';
 
 abstract class BreatheStates{}
@@ -27,3 +28,12 @@ class LoginErrorState extends BreatheStates{
 
   LoginErrorState([this.loginModel, this.error = '']);
 }
+
+class AddNewPatientLoadingState extends BreatheStates{}
+
+class AddNewPatientSuccessState extends BreatheStates{
+  final AddNewPatientModel addNewPatientModel;
+  AddNewPatientSuccessState(this.addNewPatientModel);
+}
+
+class AddNewPatientErrorState extends BreatheStates{}

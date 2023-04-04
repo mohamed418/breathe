@@ -37,6 +37,16 @@ class DioHelper {
     String? lang = 'en',
     String? authentication,
   }) async {
+    validateStatus: (statusCode){
+      if(statusCode == null){
+        return false;
+      }
+      if(statusCode == 422){ // your http status code
+        return 'pkxmzzxzlxzlxjlzxjlzjxlz';
+      }else{
+        return statusCode >= 200 && statusCode < 300;
+      }
+    };
     dio!.options.headers = {
       'Content-Type': 'application/json',
       'lang': lang,

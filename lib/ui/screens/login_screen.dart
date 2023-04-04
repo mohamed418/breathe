@@ -78,7 +78,7 @@ class LoginScreen extends StatelessWidget {
                         hint: 'email',
                         prefix: Icons.email_outlined,
                         validate: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null) {
                             return 'please add your email';
                           }
                           return null;
