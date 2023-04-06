@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grad_proj_ui_test/theme/my_theme.dart';
+import 'package:grad_proj_ui_test/ui/screens/home/home_screen.dart';
 import 'package:grad_proj_ui_test/ui/screens/onboarding_screen.dart';
 import 'bloc/cubit.dart';
 import 'network/local/bloc_observer.dart';
@@ -22,12 +23,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => BreatheCubit(),
+      create: (BuildContext context) => BreatheCubit()..getAllPatients(),
       child: MaterialApp(
         title: 'Breathe App',
         theme: MyTheme.lightTheme,
         debugShowCheckedModeBanner: false,
-        home: OnboardingScreen(),
+        // home: OnboardingScreen(),
+        home: const HomeScreen(),
       ),
     );
   }

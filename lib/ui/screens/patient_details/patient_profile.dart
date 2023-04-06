@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class PatientProfile extends StatelessWidget {
-  const PatientProfile({Key? key}) : super(key: key);
+  final dynamic name;
+  final dynamic phoneNumber;
+
+  const PatientProfile({
+    super.key,
+    required this.name,
+    this.phoneNumber,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +30,7 @@ class PatientProfile extends StatelessWidget {
                   const SizedBox(height: 50),
                   Center(
                     child: Text(
-                      "Name of Patient",
+                      name,
                       style: Theme.of(context)
                           .textTheme
                           .headline4
@@ -119,9 +126,9 @@ class PatientProfile extends StatelessWidget {
             ),
             Text(
               '''
-    Name : Sayed Hashem
+    Name : $name
     Age : 21
-    Mobile Number : 01120711950
+    Mobile Number : $phoneNumber
               ''',
               style: Theme.of(context).textTheme.headline4?.copyWith(
                   fontSize: 17,
