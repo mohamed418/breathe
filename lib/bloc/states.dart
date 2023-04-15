@@ -37,7 +37,12 @@ class AddNewPatientSuccessState extends BreatheStates{
   AddNewPatientSuccessState(this.addNewPatientModel);
 }
 
-class AddNewPatientErrorState extends BreatheStates{}
+class AddNewPatientErrorState extends BreatheStates{
+  final String error;
+
+  AddNewPatientErrorState(this.error);
+
+}
 
 class GetAllPatientsLoadingState extends BreatheStates{}
 
@@ -46,4 +51,23 @@ class GetAllPatientsSuccessState extends BreatheStates{
   GetAllPatientsSuccessState(this.addNewPatientsModel);
 }
 
-class GetAllPatientsErrorState extends BreatheStates{}
+class GetAllPatientsErrorState extends BreatheStates{
+  final String error;
+
+  GetAllPatientsErrorState(this.error);
+
+}
+
+class SearchPatientsLoadingState extends BreatheStates{}
+
+class SearchPatientsSuccessState extends BreatheStates{
+  // final SearchPatientsModel addNewPatientsModel;
+  // SearchPatientsSuccessState(this.addNewPatientsModel);
+}
+
+class SearchPatientsErrorState extends BreatheStates{
+  final String error;
+
+  SearchPatientsErrorState(this.error);
+
+}

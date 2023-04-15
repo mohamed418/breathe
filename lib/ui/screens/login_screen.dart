@@ -8,6 +8,7 @@ import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
 import 'package:grad_proj_ui_test/ui/screens/patient_registeriation.dart';
 import 'package:grad_proj_ui_test/modules/signup/signup_screen.dart';
 import '../../constants/components.dart';
+import '../../network/local/cache_helper.dart';
 import '../components/breathe_background.dart';
 import 'forget_password_screen/first_screen.dart';
 import 'package:motion_toast/motion_toast.dart';
@@ -137,15 +138,15 @@ class LoginScreen extends StatelessWidget {
                         builder: (context) => CustomButton(
                           text: 'Log in',
                           onTap: () {
-                            BreatheCubit.get(context).getAllPatients();
+                            BreatheCubit.get(context).getAllPatients(CacheHelper.getData(key: 'Token'));
                             if (formLoginKey.currentState!
                                 .validate()) {
                               FocusScope.of(context).unfocus();
                               debugPrint('email : ${emailController.text}');
                               debugPrint('password : ${passwordController.text}');
-                              BreatheCubit.get(context).login(
-                                email: emailController.text,
-                                password: passwordController.text,
+                              BreatheCubit.get(context).login1(
+                                emailController.text,
+                                passwordController.text,
                                 //token: CacheHelper.getData(key: 'token') ??'',
                                 //context: context,
                               );

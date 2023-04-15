@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:grad_proj_ui_test/constants/components.dart';
 import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../constants/transitions.dart';
 import '../../../../models/home_instructions_model.dart';
 import '../../../components/patient_registration_button.dart';
+import '../list_of_patients/search_screen.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -85,11 +87,15 @@ class _HomeTabState extends State<HomeTab> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: defaultFormField(
-                label: '',
+                label: 'Search',
                 type: TextInputType.visiblePassword,
                 controller: null,
                 hint: 'Search there...',
                 prefix: Icons.search,
+                //isClickable: false,
+                onTap: (){
+                  Navigator.push(context, CustomPageRoute1(child: SearchScreen()));
+                },
                 validate: (value) {
                   if (value == null || value.isEmpty) {
                     return '';

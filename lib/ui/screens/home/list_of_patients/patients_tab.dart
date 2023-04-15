@@ -2,7 +2,10 @@ import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grad_proj_ui_test/constants/components.dart';
+import 'package:grad_proj_ui_test/ui/screens/home/list_of_patients/search_screen.dart';
 import 'package:lottie/lottie.dart';
+import '../../../../constants/transitions.dart';
+import '../../../../network/local/cache_helper.dart';
 import '../../../components/custom_button.dart';
 import '../../patient_details/patient_profile.dart';
 import '../../patient_registeriation.dart';
@@ -15,12 +18,9 @@ class PatientsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BreatheCubit, BreatheStates>(
-      listener: (context, state) {
-        if (state is GetAllPatientsLoadingState) {
-          print('yyyysssssssssssssssssssssssssssssssssssssssssssss');
-        }
-      },
+      listener: (context, state) {},
       builder: (context, state) {
+        final searchController = TextEditingController();
         Size size = MediaQuery.of(context).size;
         var cubit = BreatheCubit.get(context);
         InkWell buildPatientItem(BuildContext context, name, phoneNumber) {
@@ -39,7 +39,11 @@ class PatientsTab extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () {
-                              print('delete');
+                              cubit.deletePatient(
+                                context,
+                                CacheHelper.getData(key: 'Token'),
+                                name,
+                              );
                             },
                             child: shadeMask(
                               'delete',
@@ -69,7 +73,7 @@ class PatientsTab extends StatelessWidget {
             child: Container(
               color: Colors.transparent,
               height: size.height * .01,
-              width: double.infinity,
+              width: size.width * .7,
               child: Row(
                 children: [
                   const CircleAvatar(
@@ -118,9 +122,13 @@ class PatientsTab extends StatelessWidget {
                   defaultFormField(
                     label: '',
                     type: TextInputType.visiblePassword,
-                    controller: null,
+                    controller: searchController,
                     hint: 'Search there...',
                     prefix: Icons.search,
+                    onTap: () => Navigator.push(
+                      context,
+                      CustomPageRoute1(child: SearchScreen()),
+                    ),
                     validate: (value) {
                       if (value == null || value.isEmpty) {
                         return '';
@@ -135,7 +143,8 @@ class PatientsTab extends StatelessWidget {
                   CustomButton(
                     text: 'add patient',
                     onTap: () {
-                      BreatheCubit.get(context).getAllPatients();
+                      BreatheCubit.get(context)
+                          .getAllPatients(CacheHelper.getData(key: 'Token'));
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -149,25 +158,34 @@ class PatientsTab extends StatelessWidget {
                   Center(
                     child: BuildCondition(
                       condition: state is! GetAllPatientsLoadingState,
-                      builder: (context) => GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        mainAxisSpacing: 1,
-                        crossAxisSpacing: 1,
-                        childAspectRatio: 1 / .2,
-                        crossAxisCount: 1,
-                        children: List.generate(
-                          cubit.getAllPatientsModel!.patients.length,
-                          (index) => buildPatientItem(
-                            context,
-                            cubit.getAllPatientsModel!.patients[index].fullName,
-                            cubit.getAllPatientsModel!.patients[index]
-                                .mobileNumber,
+                      builder: (context) => BuildCondition(
+                        condition: cubit.getAllPatientsModel!.patients.isNotEmpty,
+                        builder: (context) => GridView.count(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          mainAxisSpacing: 1,
+                          crossAxisSpacing: 1,
+                          childAspectRatio: 1 / .2,
+                          crossAxisCount: 1,
+                          children: List.generate(
+                            cubit.getAllPatientsModel!.patients.length,
+                            (index) => buildPatientItem(
+                              context,
+                              cubit.getAllPatientsModel!.patients[index]
+                                  .fullName,
+                              cubit.getAllPatientsModel!.patients[index]
+                                  .mobileNumber,
+                            ),
                           ),
+                        ),
+                        fallback: (context) => const Padding(
+                          padding: EdgeInsets.only(top: 100),
+                          child: Text('no patients yet',
+                              style: TextStyle(fontSize: 30)),
                         ),
                       ),
                       fallback: (context) =>
-                          const Center(child: CircularProgressIndicator()),
+                      const Center(child: CircularProgressIndicator()),
                     ),
                   ),
                 ],

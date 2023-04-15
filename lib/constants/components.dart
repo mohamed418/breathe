@@ -131,7 +131,7 @@ Widget defaultFormField({
 }) =>
     TextFormField(
       onTap: () {
-        //onTap!();
+        onTap!();
       },
       controller: controller,
       keyboardType: type,

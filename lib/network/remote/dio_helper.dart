@@ -16,17 +16,18 @@ class DioHelper {
     required String url,
     Map<String, dynamic>? query,
     String? lang = 'en',
-    String? authentication,
+    String? Token,
   }) async {
     dio!.options.headers = {
       'Content-Type': 'application/json',
+      'Authorization': Token,
       'lang': lang,
-      "authentication": authentication,
+      //"Token": Token,
     };
     Options(
       validateStatus: (_) => true,
       contentType: Headers.jsonContentType,
-      responseType:ResponseType.json,
+      responseType: ResponseType.json,
     );
     return await dio!.get(url, queryParameters: query);
   }
@@ -35,27 +36,18 @@ class DioHelper {
     required String url,
     required Map<String, dynamic> data,
     String? lang = 'en',
-    String? authentication,
+    String? Token,
   }) async {
-    validateStatus: (statusCode){
-      if(statusCode == null){
-        return false;
-      }
-      if(statusCode == 422){ // your http status code
-        return 'pkxmzzxzlxzlxjlzxjlzjxlz';
-      }else{
-        return statusCode >= 200 && statusCode < 300;
-      }
-    };
     dio!.options.headers = {
       'Content-Type': 'application/json',
+      'Authorization': Token,
       'lang': lang,
-      'authentication':authentication,
+      'Token': Token,
     };
     Options(
       validateStatus: (_) => true,
       contentType: Headers.jsonContentType,
-      responseType:ResponseType.json,
+      responseType: ResponseType.json,
     );
     return dio!.post(url, data: data);
   }
@@ -64,12 +56,12 @@ class DioHelper {
     required String url,
     required Map<String, dynamic> data,
     String? lang = 'en',
-    String? authentication,
+    String? Token,
   }) async {
     dio!.options.headers = {
       'Content-Type': 'application/json',
       'lang': lang,
-      'authentication':authentication,
+      'Token': Token,
     };
     Options(
       validateStatus: (_) => true,
@@ -81,12 +73,12 @@ class DioHelper {
     required String url,
     required Map<String, dynamic> data,
     String? lang = 'en',
-    String? authentication,
+    String? Token,
   }) async {
     dio!.options.headers = {
       'Content-Type': 'application/json',
       'lang': lang,
-      'authentication':authentication,
+      'Token': Token,
     };
     Options(
       validateStatus: (_) => true,
