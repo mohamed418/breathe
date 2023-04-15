@@ -130,9 +130,9 @@ Widget defaultFormField({
   // ignore: use_function_type_syntax_for_parameters
 }) =>
     TextFormField(
-      onTap: () {
-        onTap!();
-      },
+      // onTap: () {
+      //   onTap!();
+      // },
       controller: controller,
       keyboardType: type,
       obscureText: isPassword,
@@ -140,9 +140,9 @@ Widget defaultFormField({
       maxLines: maxLines,
       enabled: isClickable,
       //style: GoogleFonts.cairo(),
-      onFieldSubmitted: (s) {
-        onSubmit!(s);
-      },
+      // onFieldSubmitted: (s) {
+      //   onSubmit!(s);
+      // },
       onChanged: (s) {
         //onChange!(s);
       },

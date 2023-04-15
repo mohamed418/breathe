@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:grad_proj_ui_test/constants/components.dart';
 import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import '../../../../constants/transitions.dart';
 import '../../../../models/home_instructions_model.dart';
 import '../../../components/patient_registration_button.dart';
@@ -45,67 +46,64 @@ class _HomeTabState extends State<HomeTab> {
             const SizedBox(
               height: 20,
             ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 2,
-                ),
-                const CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage('assets/images/doctor_pic.png'),
-                ),
-                const SizedBox(
-                  width: 3,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      'Welcome!',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          ?.copyWith(fontSize: 19, fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      'Dr-Sayed',
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            fontSize: 16,
-                          ),
-                    )
-                  ],
-                ),
-                const Spacer(),
-                const PatientRegistrationButton(),
-                const SizedBox(
-                  width: 4,
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 2,
+                  ),
+                  const CircleAvatar(
+                    radius: 25,
+                    backgroundImage: AssetImage('assets/images/doctor_pic.png'),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Welcome!',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.copyWith(fontSize: 19, fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        'Dr-Sayed',
+                        style: Theme.of(context).textTheme.headline4?.copyWith(
+                              fontSize: 16,
+                            ),
+                      )
+                    ],
+                  ),
+                  const Spacer(),
+                  const PatientRegistrationButton(),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               height: 8,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: defaultFormField(
-                label: 'Search',
-                type: TextInputType.visiblePassword,
-                controller: null,
-                hint: 'Search there...',
-                prefix: Icons.search,
-                //isClickable: false,
-                onTap: (){
-                  Navigator.push(context, CustomPageRoute1(child: SearchScreen()));
-                },
-                validate: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '';
-                  }
-                  if (value.length > 11) {
-                    return '';
-                  }
-                  return null;
-                },
-              ),
+              padding: const EdgeInsets.only(top: 10),
+              child: Row(
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset('assets/lotties/search.json'),
+                  TextButton(
+                    onPressed: (){
+                      Navigator.push(context, CustomPageRoute1(child: SearchScreen()));
+                    },
+                    child: const Text('Search on specific patient', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                  ),
+                ],
+              )
             ),
             Expanded(
               child: PageView.builder(
