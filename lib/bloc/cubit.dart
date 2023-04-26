@@ -2,12 +2,14 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../constants/components.dart';
+import 'package:grad_proj_ui_test/ui/screens/login_screen.dart';
 import '../models/add_new_patient_model.dart';
+import '../models/forget_password_model.dart';
 import '../models/get_all_patients.dart';
 import '../models/login_model.dart';
 import '../network/local/cache_helper.dart';
-import '../network/remote/dio_helper.dart';
+import '../ui/screens/forget_password_screen/create_new_password_screen.dart';
+import '../ui/screens/forget_password_screen/otp_screen.dart';
 import '../ui/screens/home/home_screen.dart';
 import '../ui/screens/home/home_tab/home_tab.dart';
 import '../ui/screens/home/list_of_patients/patients_tab.dart';
@@ -186,7 +188,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     emit(LoginLoadingState());
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/',
+        baseUrl: 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/user',
         headers: {'Content-Type': 'application/json'},
       ),
     );
@@ -265,8 +267,97 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
+  Future<void> forgetPassword(String email,context) async {
+    emit(ForgetPasswordLoadingState());
+    try {
+      final response = await Dio().post(
+        'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/user/forget-password',
+        data: {'email': email},
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        emit(ForgetPasswordSuccessState());
+        ForgetPasswordModel forgetPasswordModel = ForgetPasswordModel.fromJson(response.data);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return OtpScreen(email: email,);
+            },
+          ),
+        );
+      } else {
+        emit(ForgetPasswordErrorState('Unknown error occurred.'));
+      }
+    } on DioError catch (error) {
+      if (error.type == DioErrorType.response) {
+        emit(ForgetPasswordErrorState('Network error occurred.'));
+      } else {
+        emit(ForgetPasswordErrorState('Network error occurred.'));
+      }
+    }
+  }
+  Future<void> verifyCode(dynamic code, String email,context) async {
+    emit(VerifyCodeLoadingState());
+    try {
+      final response = await Dio().post(
+        'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/user/verify-code',
+        data: {'verification_code': code},
+        options: Options(headers: {'email': email}),
+      );
+      if (response.statusCode == 200) {
+        emit(VerifyCodeSuccessState());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return CreateNewPasswordScreen(email: email,);
+            },
+          ),
+        );
+      } else {
+        emit(VerifyCodeErrorState('Unknown error occurred.'));
+      }
+    } on DioError catch (error) {
+      if (error.type == DioErrorType.response) {
+        emit(VerifyCodeErrorState('Network error occurred.'));
+      } else {
+        emit(VerifyCodeErrorState('Network error occurred.'));
+      }
+    }
+  }
+
+  Future<void> resetPassword(String password, String confirmPassword, String email,context) async {
+    emit(ResetPassLoadingState());
+    try {
+      final response = await Dio().post(
+        'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/user/reset-password',
+        data: {'new_password': password, 'Confirm Password': confirmPassword},
+        options: Options(headers: {'email': email}),
+      );
+      if (response.statusCode == 200) {
+        emit(ResetPassSuccessState());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return LoginScreen();
+            },
+          ),
+        );
+      } else {
+        emit(ResetPassErrorState('Unknown error occurred.'));
+      }
+    } on DioError catch (error) {
+      if (error.type == DioErrorType.response) {
+        emit(ResetPassErrorState('Network error occurred.'));
+      } else {
+        emit(ResetPassErrorState('Network error occurred.'));
+      }
+    }
+  }
 
 }
+
 
 
 // void addNewPatient({

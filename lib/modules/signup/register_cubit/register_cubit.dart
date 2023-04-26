@@ -15,7 +15,7 @@ class SignUpCubit extends Cubit<SignUpStates> {
     String? password,
   }) {
     emit(SignUpLoadingState());
-    DioHelper.postData(url: 'signup', data: {
+    DioHelper.postData(url: 'user/signup', data: {
       "username": username,
       "email": email,
       'password': password,

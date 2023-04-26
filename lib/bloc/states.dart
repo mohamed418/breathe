@@ -71,3 +71,33 @@ class SearchPatientsErrorState extends BreatheStates{
   SearchPatientsErrorState(this.error);
 
 }
+
+class ForgetPasswordLoadingState extends BreatheStates {}
+
+class ForgetPasswordSuccessState extends BreatheStates {}
+
+class ForgetPasswordErrorState extends BreatheStates {
+  final String message;
+
+  ForgetPasswordErrorState(this.message);
+}
+
+class VerifyCodeLoadingState extends BreatheStates {}
+
+class VerifyCodeSuccessState extends BreatheStates {}
+
+class VerifyCodeErrorState extends BreatheStates {
+  final String message;
+
+  VerifyCodeErrorState(this.message);
+}
+
+class ResetPassLoadingState extends BreatheStates {}
+
+class ResetPassSuccessState extends BreatheStates {}
+
+class ResetPassErrorState extends BreatheStates {
+  final String message;
+
+  ResetPassErrorState(this.message);
+}
