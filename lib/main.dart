@@ -3,24 +3,35 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grad_proj_ui_test/theme/my_theme.dart';
-import 'package:grad_proj_ui_test/ui/screens/home/home_screen.dart';
-import 'package:grad_proj_ui_test/ui/screens/login_screen.dart';
 import 'package:grad_proj_ui_test/ui/screens/onboarding_screen.dart';
 import 'bloc/cubit.dart';
 import 'network/local/bloc_observer.dart';
 import 'network/local/cache_helper.dart';
 import 'network/remote/dio_helper.dart';
+import 'ui/screens/login_screen.dart';
+import 'ui/screens/patient_registeriation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
   await CacheHelper.init();
-  runApp(const MyApp());
+  Widget widget;
+
+  late String? token = CacheHelper.getData(key: 'Token');
+
+  if (token != null) {
+    widget = PatientRegistrationScreen();
+  } else {
+    widget = LoginScreen();
+  }
+  runApp(MyApp(startWidget: widget,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget? startWidget;
+
+  const MyApp({super.key, this.startWidget});
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -29,7 +40,7 @@ class MyApp extends StatelessWidget {
         title: 'Breathe App',
         theme: MyTheme.lightTheme,
         debugShowCheckedModeBanner: false,
-        home: OnboardingScreen(),
+        home: startWidget,
         // home: const HomeScreen(),
       ),
     );

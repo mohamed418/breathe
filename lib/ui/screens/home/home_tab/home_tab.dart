@@ -1,10 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:grad_proj_ui_test/constants/components.dart';
-import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../constants/transitions.dart';
 import '../../../../models/home_instructions_model.dart';
@@ -155,17 +149,6 @@ class _HomeTabState extends State<HomeTab> {
             const SizedBox(
               height: 80,
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.5,
-              height: 55,
-              child: CustomButton(
-                text: 'upload',
-                onTap: () {
-                  pickImageFromGallery(ImageSource.gallery);
-                  // if you want to access camera , replace gallery with camera
-                },
-              ),
-            ),
             const SizedBox(
               height: 40,
             ),
@@ -173,22 +156,5 @@ class _HomeTabState extends State<HomeTab> {
         ),
       ),
     );
-  }
-
-  // Image Picker Image (Logic missed!)
-  File? image;
-
-  Future pickImageFromGallery(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-
-      final imageTemporary = File(image.path);
-      setState(() {
-        this.image = imageTemporary;
-      });
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
   }
 }

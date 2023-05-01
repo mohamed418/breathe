@@ -1,4 +1,5 @@
 import '../models/add_new_patient_model.dart';
+import '../models/create_medical_record_model.dart';
 import '../models/get_all_patients.dart';
 import '../models/login_model.dart';
 
@@ -100,4 +101,32 @@ class ResetPassErrorState extends BreatheStates {
   final String message;
 
   ResetPassErrorState(this.message);
+}
+
+class CreateMedicalRecordLoadingState extends BreatheStates{}
+
+class CreateMedicalRecordSuccessState extends BreatheStates{
+  final CreateMedicalRecordModel addNewPatientModel;
+  CreateMedicalRecordSuccessState(this.addNewPatientModel);
+}
+
+class CreateMedicalRecordErrorState extends BreatheStates{
+  final String error;
+
+  CreateMedicalRecordErrorState(this.error);
+
+}
+
+class ReadMedicalRecordLoadingState extends BreatheStates {}
+
+class ReadMedicalRecordSuccessState extends BreatheStates {
+  final Map<String, dynamic> medicalRecords;
+
+  ReadMedicalRecordSuccessState(this.medicalRecords);
+}
+
+class ReadMedicalRecordErrorState extends BreatheStates {
+  final String errorMessage;
+
+  ReadMedicalRecordErrorState(this.errorMessage);
 }

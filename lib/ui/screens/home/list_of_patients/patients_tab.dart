@@ -23,7 +23,8 @@ class PatientsTab extends StatelessWidget {
         final searchController = TextEditingController();
         Size size = MediaQuery.of(context).size;
         var cubit = BreatheCubit.get(context);
-        InkWell buildPatientItem(BuildContext context, name, phoneNumber) {
+        dynamic i = 1;
+        InkWell buildPatientItem(BuildContext context, name, phoneNumber,address,gender,i) {
           Size size = MediaQuery.of(context).size;
           return InkWell(
             onLongPress: () {
@@ -65,6 +66,8 @@ class PatientsTab extends StatelessWidget {
                     return PatientProfile(
                       name: name,
                       phoneNumber: phoneNumber,
+                      address: address,
+                      gender: gender,
                     );
                   },
                 ),
@@ -76,9 +79,12 @@ class PatientsTab extends StatelessWidget {
               width: size.width * .7,
               child: Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 25,
-                    backgroundImage: AssetImage('assets/images/patient1.png'),
+                  Text(
+                    '$i-',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     width: 9,
@@ -173,8 +179,10 @@ class PatientsTab extends StatelessWidget {
                               context,
                               cubit.getAllPatientsModel!.patients[index]
                                   .fullName,
-                              cubit.getAllPatientsModel!.patients[index]
-                                  .mobileNumber,
+                              cubit.getAllPatientsModel!.patients[index].mobileNumber,
+                              cubit.getAllPatientsModel!.patients[index].address,
+                              cubit.getAllPatientsModel!.patients[index].gender,
+                              '${i+index}',
                             ),
                           ),
                         ),

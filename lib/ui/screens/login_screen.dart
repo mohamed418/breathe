@@ -25,6 +25,8 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is LoginSuccessState) {
           if (state.loginModel.message == 'Successfull Login') {
+            BreatheCubit.get(context).getAllPatients(
+                CacheHelper.getData(key: 'Token'));
             navigateAndFinish(
               PatientRegistrationScreen(),
               context,
@@ -47,7 +49,7 @@ class LoginScreen extends StatelessWidget {
           ).show(context);
         }
       },
-      builder: (context, state){
+      builder: (context, state) {
         return Scaffold(
           body: SingleChildScrollView(
             child: Form(
@@ -119,10 +121,11 @@ class LoginScreen extends StatelessWidget {
                         },
                         child: Text(
                           'Forgot Your Password ?  ',
-                          style: Theme.of(context).textTheme.headline4?.copyWith(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.headline4?.copyWith(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                  ),
                         ),
                       ),
                     ],
@@ -138,12 +141,11 @@ class LoginScreen extends StatelessWidget {
                         builder: (context) => CustomButton(
                           text: 'Log in',
                           onTap: () {
-                            BreatheCubit.get(context).getAllPatients(CacheHelper.getData(key: 'Token'));
-                            if (formLoginKey.currentState!
-                                .validate()) {
+                            if (formLoginKey.currentState!.validate()) {
                               FocusScope.of(context).unfocus();
                               debugPrint('email : ${emailController.text}');
-                              debugPrint('password : ${passwordController.text}');
+                              debugPrint(
+                                  'password : ${passwordController.text}');
                               BreatheCubit.get(context).login1(
                                 emailController.text,
                                 passwordController.text,
@@ -155,8 +157,8 @@ class LoginScreen extends StatelessWidget {
                             }
                           },
                         ),
-                        fallback: (context) => const Center(
-                            child: CircularProgressIndicator()),
+                        fallback: (context) =>
+                            const Center(child: CircularProgressIndicator()),
                       )),
                   const SizedBox(
                     height: 15,
@@ -167,7 +169,8 @@ class LoginScreen extends StatelessWidget {
                       Text(
                         'Or ',
                         style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Theme.of(context).primaryColor, fontSize: 18),
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 18),
                       ),
                       Text(
                         'log in with',
@@ -225,8 +228,12 @@ class LoginScreen extends StatelessWidget {
                         },
                         child: Text(
                           'Sign Up',
-                          style: Theme.of(context).textTheme.headline4?.copyWith(
-                              fontSize: 16, color: Theme.of(context).primaryColor),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              ?.copyWith(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor),
                         ),
                       )
                     ],

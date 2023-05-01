@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grad_proj_ui_test/ui/screens/login_screen.dart';
 import '../models/add_new_patient_model.dart';
+import '../models/create_medical_record_model.dart';
 import '../models/forget_password_model.dart';
 import '../models/get_all_patients.dart';
 import '../models/login_model.dart';
@@ -84,7 +85,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     ),
   ];
 
-  List<Widget> Screens = [
+  List<Widget> screens = [
     const HomeTab(),
     const SymptomsTab(),
     const PatientsTab(),
@@ -113,14 +114,14 @@ class BreatheCubit extends Cubit<BreatheStates> {
   //     },
   //     Token: CacheHelper.getData(key: "token") ?? '',
   //   ).then((value) {
-  //     //print(value.data['message']);
+  //     //debugPrint(value.data['message']);
   //     LoginModel loginModel = LoginModel.fromJson(value.data);
   //     //getUserData();
   //     LoginErrorState(loginModel);
   //     emit(LoginSuccessState(loginModel));
   //   }).catchError((error) {
   //     emit(LoginErrorState(error.toString()));
-  //     debugPrint('login error $error');
+  //     debugdebugPrint('login error $error');
   //   });
   // }
   Future<void> addNewPatient(
@@ -146,7 +147,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     };
 
     try {
-      final response = await dio.post('/patients', data: data);
+      final response = await dio.post('/user/patient', data: data);
       AddNewPatientModel addNewPatient =
           AddNewPatientModel.fromJson(response.data);
       getAllPatients(CacheHelper.getData(key: 'Token'));
@@ -161,7 +162,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
       );
     } catch (e) {
       emit(AddNewPatientErrorState(e.toString()));
-      print('Error adding new patient: ${e.toString()}');
+      debugPrint('Error adding new patient: ${e.toString()}');
     }
   }
 
@@ -181,7 +182,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
       emit(GetAllPatientsSuccessState(getAllPatientsModel!));
     } catch (e) {
       emit(GetAllPatientsErrorState(e.toString()));
-      print('Error getting patients: ${e.toString()}');
+      debugPrint('Error getting patients: ${e.toString()}');
     }
   }
   Future<void> login1(String email, String password) async {
@@ -204,11 +205,13 @@ class BreatheCubit extends Cubit<BreatheStates> {
       LoginModel loginModel = LoginModel.fromJson(response.data);
 
       CacheHelper.saveData(key: 'Token', value: '${loginModel.token}');
+
       emit(LoginSuccessState(loginModel));
+
     } catch (e) {
       // Handle any errors that may occur
       emit(LoginErrorState('Failed to login: ${e.toString()}'));
-      print('Error during login: ${e.toString()}');
+      debugPrint('Error during login: ${e.toString()}');
     }
   }
 
@@ -223,19 +226,19 @@ class BreatheCubit extends Cubit<BreatheStates> {
     final data = {'full_name': fullName};
 
     try {
-      await dio.delete('/patient/delete/', data: data);
+      await dio.delete('user/patient/delete', data: data);
       // emit(DeletePatientSuccessState());
       Navigator.pop(context);
       getAllPatients(token);
     } catch (e) {
       // emit(DeletePatientErrorState(e.toString()));
-      print('Error deleting patient: ${e.toString()}');
+      debugPrint('Error deleting patient: ${e.toString()}');
     }
   }
 
-  Future<Response> searchPatients1(String token, String full_name) async {
-    final String baseUrl = 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/';
-    final String endpoint = 'user/patient/$full_name';
+  Future<Response> searchPatients1(String token, String fullName) async {
+    const String baseUrl = 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/';
+    final String endpoint = 'user/patient/$fullName';
 
     try {
       final Dio dio = Dio();
@@ -250,7 +253,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
-  Future<void> searchPatients(String token,String full_name) async {
+  Future<void> searchPatients(String token,String fullName) async {
     emit(SearchPatientsLoadingState());
 
     final dio = Dio(BaseOptions(
@@ -259,11 +262,11 @@ class BreatheCubit extends Cubit<BreatheStates> {
     ));
 
     try {
-      final response = await dio.get('user/patient/$full_name');
+      final response = await dio.get('user/patient/$fullName');
       emit(SearchPatientsSuccessState());
     } catch (e) {
       emit(SearchPatientsErrorState(e.toString()));
-      print('Error getting patients: ${e.toString()}');
+      debugPrint('Error getting patients: ${e.toString()}');
     }
   }
 
@@ -356,59 +359,53 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
+  Future<void> createMedicalRecord(
+      context,
+      String token,
+      String result,
+      String patientId,
+      ) async {
+    emit(CreateMedicalRecordLoadingState());
+
+    final dio = Dio(BaseOptions(
+      baseUrl: 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/',
+      headers: {'Authorization': 'Bearer $token'},
+    ));
+
+    final data = {
+      'result': result,
+      'patient_id': patientId,
+    };
+
+    try {
+      final response = await dio.post('/user/patient/medical_record', data: data);
+      CreateMedicalRecordModel addNewPatient =
+      CreateMedicalRecordModel.fromJson(response.data);
+      emit(CreateMedicalRecordSuccessState(addNewPatient));
+    } catch (e) {
+      emit(CreateMedicalRecordErrorState(e.toString()));
+      debugPrint('Error Creating Medical Record: ${e.toString()}');
+    }
+  }
+
+  Future<void> readMedicalRecord(String patientId,token) async {
+    emit(ReadMedicalRecordLoadingState());
+    try {
+      final dio = Dio();
+      final response = await dio.get(
+          "http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/user/patients/$patientId/medical_records",
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      if (response.statusCode == 200) {
+        emit(ReadMedicalRecordSuccessState(response.data));
+      } else {
+        emit(ReadMedicalRecordErrorState(
+            "Error reading medical record. Status code: ${response.statusCode}"));
+      }
+    } catch (e) {
+      emit(ReadMedicalRecordErrorState("Error reading medical record: $e"));
+      debugPrint('Error during reading record: ${e.toString()}');
+
+    }
+  }
+
 }
-
-
-
-// void addNewPatient({
-//   required String full_name,
-//   required String gender,
-//   required String address,
-//   required String mobile_number,
-//   dynamic Token,
-//   required BuildContext? context,
-// }) {
-//   emit(AddNewPatientLoadingState());
-//   DioHelper.postData(
-//     url: 'patients',
-//     data: {
-//       "full_name": full_name,
-//       "gender": gender,
-//       "address": address,
-//       "mobile_number": mobile_number,
-//       Token: CacheHelper.getData(key: "token") ?? '',
-//     },
-//     Token: CacheHelper.getData(key: "token"),
-//   ).then((value) {
-//     AddNewPatientModel addNewPatient =
-//         AddNewPatientModel.fromJson(value.data);
-//     Navigator.push(
-//       context!,
-//       MaterialPageRoute(
-//         builder: (context) {
-//           return const HomeScreen();
-//         },
-//       ),
-//     );
-//
-//     emit(AddNewPatientSuccessState(addNewPatient));
-//     getAllPatients(CacheHelper.getData(key: 'Token'));
-//   }).catchError((error) {
-//     emit(AddNewPatientErrorState());
-//     debugPrint('add new patient error $error');
-//   });
-// }
-// void getAllPatients() {
-//   emit(GetAllPatientsLoadingState());
-//   DioHelper.getData(
-//     url: 'user/patients',
-//     Token: CacheHelper.getData(key: "token"),
-//   ).then((value) {
-//     getAllPatientsModel = GetAllPatientsModel.fromJson(value.data);
-//     print(value.data);
-//     emit(GetAllPatientsSuccessState(getAllPatientsModel!));
-//   }).catchError((error) {
-//     emit(GetAllPatientsErrorState());
-//     debugPrint('get all patient error $error');
-//   });
-// }

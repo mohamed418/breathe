@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
             items: cubit.tabs,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
           ),
-          body: SafeArea(child: cubit.Screens[cubit.currentIndex]),
+          body: SafeArea(child: cubit.screens[cubit.currentIndex]),
         );
       },
     );
