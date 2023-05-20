@@ -1,16 +1,17 @@
 import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grad_proj_ui_test/bloc/cubit.dart';
+import 'package:grad_proj_ui_test/bloc/states.dart';
 import 'package:grad_proj_ui_test/constants/components.dart';
 import 'package:grad_proj_ui_test/ui/screens/home/list_of_patients/search_screen.dart';
 import 'package:lottie/lottie.dart';
+
 import '../../../../constants/transitions.dart';
 import '../../../../network/local/cache_helper.dart';
 import '../../../components/custom_button.dart';
 import '../../patient_details/patient_profile.dart';
 import '../../patient_registeriation.dart';
-import 'package:grad_proj_ui_test/bloc/cubit.dart';
-import 'package:grad_proj_ui_test/bloc/states.dart';
 
 class PatientsTab extends StatelessWidget {
   const PatientsTab({Key? key}) : super(key: key);
@@ -21,10 +22,11 @@ class PatientsTab extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         final searchController = TextEditingController();
-        Size size = MediaQuery.of(context).size;
+        // Size size = MediaQuery.of(context).size;
         var cubit = BreatheCubit.get(context);
         dynamic i = 1;
-        InkWell buildPatientItem(BuildContext context, name, phoneNumber,address,gender,i) {
+        InkWell buildPatientItem(
+            BuildContext context, name, phoneNumber, address, gender, i) {
           Size size = MediaQuery.of(context).size;
           return InkWell(
             onLongPress: () {
@@ -165,7 +167,8 @@ class PatientsTab extends StatelessWidget {
                     child: BuildCondition(
                       condition: state is! GetAllPatientsLoadingState,
                       builder: (context) => BuildCondition(
-                        condition: cubit.getAllPatientsModel!.patients.isNotEmpty,
+                        condition:
+                            cubit.getAllPatientsModel!.patients.isNotEmpty,
                         builder: (context) => GridView.count(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -179,10 +182,12 @@ class PatientsTab extends StatelessWidget {
                               context,
                               cubit.getAllPatientsModel!.patients[index]
                                   .fullName,
-                              cubit.getAllPatientsModel!.patients[index].mobileNumber,
-                              cubit.getAllPatientsModel!.patients[index].address,
+                              cubit.getAllPatientsModel!.patients[index]
+                                  .mobileNumber,
+                              cubit
+                                  .getAllPatientsModel!.patients[index].address,
                               cubit.getAllPatientsModel!.patients[index].gender,
-                              '${i+index}',
+                              '${i + index}',
                             ),
                           ),
                         ),
@@ -193,7 +198,7 @@ class PatientsTab extends StatelessWidget {
                         ),
                       ),
                       fallback: (context) =>
-                      const Center(child: CircularProgressIndicator()),
+                          const Center(child: CircularProgressIndicator()),
                     ),
                   ),
                 ],

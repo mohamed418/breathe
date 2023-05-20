@@ -5,12 +5,15 @@ import 'package:grad_proj_ui_test/bloc/cubit.dart';
 import 'package:grad_proj_ui_test/bloc/states.dart';
 import 'package:grad_proj_ui_test/constants/components.dart';
 import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
-import '../../components/breathe_background.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
+import '../../components/breathe_background.dart';
+
 class ForgetPasswordP1 extends StatelessWidget {
   var passKey = GlobalKey<FormState>();
+
+  ForgetPasswordP1({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -100,16 +103,16 @@ Recieve a Verification Code
                         builder: (context) => CustomButton(
                           text: 'Send',
                           onTap: () {
-                            print('objectobjectobjectobjectobject ${passController.text}');
+                            print(
+                                'objectobjectobjectobjectobject ${passController.text}');
                             cubit.forgetPassword(
                               passController.text,
                               context,
                             );
-
                           },
                         ),
-                        fallback: (context) => const Center(
-                            child: CircularProgressIndicator()),
+                        fallback: (context) =>
+                            const Center(child: CircularProgressIndicator()),
                       )),
                 ],
               ),

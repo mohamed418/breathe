@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grad_proj_ui_test/constants/transitions.dart';
 import 'package:grad_proj_ui_test/ui/screens/login_screen.dart';
+
 import '../models/add_new_patient_model.dart';
 import '../models/create_medical_record_model.dart';
 import '../models/forget_password_model.dart';
 import '../models/get_all_patients.dart';
+import '../models/get_profile_data.dart';
 import '../models/login_model.dart';
 import '../network/local/cache_helper.dart';
 import '../ui/screens/forget_password_screen/create_new_password_screen.dart';
@@ -92,11 +97,14 @@ class BreatheCubit extends Cubit<BreatheStates> {
     const AccountTab(),
   ];
 
-  void changeBot(index) {
+  void changeBot(index, context) {
     emit(ChangeBotNavState());
     currentIndex = index;
     if (currentIndex == 2) {
       getAllPatients(CacheHelper.getData(key: 'Token'));
+    }
+    if (currentIndex == 3) {
+      getProfileData(context);
     }
   }
 
@@ -185,6 +193,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
       debugPrint('Error getting patients: ${e.toString()}');
     }
   }
+
   Future<void> login1(String email, String password) async {
     emit(LoginLoadingState());
     final dio = Dio(
@@ -207,7 +216,6 @@ class BreatheCubit extends Cubit<BreatheStates> {
       CacheHelper.saveData(key: 'Token', value: '${loginModel.token}');
 
       emit(LoginSuccessState(loginModel));
-
     } catch (e) {
       // Handle any errors that may occur
       emit(LoginErrorState('Failed to login: ${e.toString()}'));
@@ -215,29 +223,9 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
-  Future<void> deletePatient(context, String token, String fullName) async {
-    // emit(DeletePatientLoadingState());
-
-    final dio = Dio(BaseOptions(
-      baseUrl: 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/',
-      headers: {'Authorization': 'Bearer $token'},
-    ));
-
-    final data = {'full_name': fullName};
-
-    try {
-      await dio.delete('user/patient/delete', data: data);
-      // emit(DeletePatientSuccessState());
-      Navigator.pop(context);
-      getAllPatients(token);
-    } catch (e) {
-      // emit(DeletePatientErrorState(e.toString()));
-      debugPrint('Error deleting patient: ${e.toString()}');
-    }
-  }
-
   Future<Response> searchPatients1(String token, String fullName) async {
-    const String baseUrl = 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/';
+    const String baseUrl =
+        'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/';
     final String endpoint = 'user/patient/$fullName';
 
     try {
@@ -253,7 +241,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
-  Future<void> searchPatients(String token,String fullName) async {
+  Future<void> searchPatients(String token, String fullName) async {
     emit(SearchPatientsLoadingState());
 
     final dio = Dio(BaseOptions(
@@ -270,7 +258,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
-  Future<void> forgetPassword(String email,context) async {
+  Future<void> forgetPassword(String email, context) async {
     emit(ForgetPasswordLoadingState());
     try {
       final response = await Dio().post(
@@ -279,12 +267,15 @@ class BreatheCubit extends Cubit<BreatheStates> {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         emit(ForgetPasswordSuccessState());
-        ForgetPasswordModel forgetPasswordModel = ForgetPasswordModel.fromJson(response.data);
+        ForgetPasswordModel forgetPasswordModel =
+            ForgetPasswordModel.fromJson(response.data);
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
-              return OtpScreen(email: email,);
+              return OtpScreen(
+                email: email,
+              );
             },
           ),
         );
@@ -299,7 +290,8 @@ class BreatheCubit extends Cubit<BreatheStates> {
       }
     }
   }
-  Future<void> verifyCode(dynamic code, String email,context) async {
+
+  Future<void> verifyCode(dynamic code, String email, context) async {
     emit(VerifyCodeLoadingState());
     try {
       final response = await Dio().post(
@@ -313,7 +305,9 @@ class BreatheCubit extends Cubit<BreatheStates> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return CreateNewPasswordScreen(email: email,);
+              return CreateNewPasswordScreen(
+                email: email,
+              );
             },
           ),
         );
@@ -329,7 +323,8 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
-  Future<void> resetPassword(String password, String confirmPassword, String email,context) async {
+  Future<void> resetPassword(
+      String password, String confirmPassword, String email, context) async {
     emit(ResetPassLoadingState());
     try {
       final response = await Dio().post(
@@ -360,11 +355,11 @@ class BreatheCubit extends Cubit<BreatheStates> {
   }
 
   Future<void> createMedicalRecord(
-      context,
-      String token,
-      String result,
-      String patientId,
-      ) async {
+    context,
+    String token,
+    String result,
+    String patientId,
+  ) async {
     emit(CreateMedicalRecordLoadingState());
 
     final dio = Dio(BaseOptions(
@@ -378,9 +373,10 @@ class BreatheCubit extends Cubit<BreatheStates> {
     };
 
     try {
-      final response = await dio.post('/user/patient/medical_record', data: data);
+      final response =
+          await dio.post('/user/patient/medical_record', data: data);
       CreateMedicalRecordModel addNewPatient =
-      CreateMedicalRecordModel.fromJson(response.data);
+          CreateMedicalRecordModel.fromJson(response.data);
       emit(CreateMedicalRecordSuccessState(addNewPatient));
     } catch (e) {
       emit(CreateMedicalRecordErrorState(e.toString()));
@@ -388,7 +384,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
-  Future<void> readMedicalRecord(String patientId,token) async {
+  Future<void> readMedicalRecord(String patientId, token) async {
     emit(ReadMedicalRecordLoadingState());
     try {
       final dio = Dio();
@@ -404,8 +400,59 @@ class BreatheCubit extends Cubit<BreatheStates> {
     } catch (e) {
       emit(ReadMedicalRecordErrorState("Error reading medical record: $e"));
       debugPrint('Error during reading record: ${e.toString()}');
-
     }
   }
 
+  Future<void> deletePatient(context, String token, String fullName) async {
+    // emit(DeletePatientLoadingState());
+
+    final dio = Dio(BaseOptions(
+      baseUrl: 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/',
+      headers: {'Authorization': 'Bearer $token'},
+    ));
+
+    final data = {'full_name': fullName};
+
+    try {
+      await dio.delete('user/patient/delete', data: data);
+      // emit(DeletePatientSuccessState());
+      Navigator.pop(context);
+      getAllPatients(token);
+    } catch (e) {
+      // emit(DeletePatientErrorState(e.toString()));
+      debugPrint('Error deleting patient: ${e.toString()}');
+    }
+  }
+
+  GetProfileDataModel? getProfileDataModel;
+
+  Future<void> getProfileData(context) async {
+    try {
+      emit(GetProfileDataLoadingState());
+
+      final dio = Dio();
+      dio.options.headers['Authorization'] =
+          'Bearer ${CacheHelper.getData(key: 'Token')}';
+
+      const apiUrl =
+          'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/logged_user/profiledata';
+
+      final response = await dio.get(apiUrl);
+
+      if (response.statusCode == 200) {
+        // Success
+        final responseData = response.data;
+        getProfileDataModel = GetProfileDataModel.fromJson(responseData);
+        Navigator.push(context, CustomPageRoute1(child: const AccountTab()));
+        emit(GetProfileDataSuccessState(getProfileDataModel!));
+      } else {
+        // Error
+        emit(GetProfileDataErrorState('Failed to fetch profile data'));
+      }
+    } catch (error) {
+      emit(GetProfileDataErrorState(
+          'An error occurred while fetching profile data'));
+      debugPrint('Error deleting patient: ${error.toString()}');
+    }
+  }
 }

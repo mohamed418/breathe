@@ -1,20 +1,21 @@
+import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grad_proj_ui_test/constants/components.dart';
 import 'package:grad_proj_ui_test/ui/screens/login_screen.dart';
-import '../../ui/components/breathe_background.dart';
-import '../../ui/components/custom_button.dart';
-import 'package:buildcondition/buildcondition.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
-import '../../ui/screens/forget_password_screen/first_screen.dart';
+import '../../ui/components/breathe_background.dart';
+import '../../ui/components/custom_button.dart';
 import 'register_cubit/register_cubit.dart';
 import 'register_cubit/register_states.dart';
 
 class SignupScreen extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
+
+  SignupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,8 @@ class SignupScreen extends StatelessWidget {
       child: BlocConsumer<SignUpCubit, SignUpStates>(
         listener: (context, state) {
           if (state is SignUpSuccessState) {
-            if (state.signupModel.message == 'Congratulation!! Successfully Register') {
+            if (state.signupModel.message ==
+                'Congratulation!! Successfully Register') {
               navigateAndFinish(
                 LoginScreen(),
                 context,
@@ -62,7 +64,7 @@ class SignupScreen extends StatelessWidget {
             ).show(context);
           }
         },
-        builder: (context, state){
+        builder: (context, state) {
           return Scaffold(
             body: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -149,12 +151,14 @@ class SignupScreen extends StatelessWidget {
                           builder: (context) => CustomButton(
                             text: 'Sign up',
                             onTap: () {
-                              if (formKey.currentState!
-                                  .validate()) {
+                              if (formKey.currentState!.validate()) {
                                 FocusScope.of(context).unfocus();
-                                debugPrint('user name : ${signUpUserNameController.text}');
-                                debugPrint('email : ${signUpEmailController.text}');
-                                debugPrint('password : ${signUpPasswordController.text}');
+                                debugPrint(
+                                    'user name : ${signUpUserNameController.text}');
+                                debugPrint(
+                                    'email : ${signUpEmailController.text}');
+                                debugPrint(
+                                    'password : ${signUpPasswordController.text}');
                                 SignUpCubit.get(context).userSignUp(
                                   username: signUpUserNameController.text,
                                   email: signUpEmailController.text,
@@ -167,8 +171,8 @@ class SignupScreen extends StatelessWidget {
                               }
                             },
                           ),
-                          fallback: (context) => const Center(
-                              child: CircularProgressIndicator()),
+                          fallback: (context) =>
+                              const Center(child: CircularProgressIndicator()),
                         )),
                     const SizedBox(
                       height: 15,
@@ -178,8 +182,12 @@ class SignupScreen extends StatelessWidget {
                       children: [
                         Text(
                           'Or ',
-                          style: Theme.of(context).textTheme.headline4?.copyWith(
-                              color: Theme.of(context).primaryColor, fontSize: 18),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              ?.copyWith(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 18),
                         ),
                         Text(
                           'sign up with',
@@ -219,9 +227,10 @@ class SignupScreen extends StatelessWidget {
                       children: [
                         Text(
                           'already have an account ?',
-                          style: Theme.of(context).textTheme.headline4?.copyWith(
-                            fontSize: 16,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.headline4?.copyWith(
+                                    fontSize: 16,
+                                  ),
                         ),
                         TextButton(
                           onPressed: () {
@@ -236,8 +245,12 @@ class SignupScreen extends StatelessWidget {
                           },
                           child: Text(
                             'Log in',
-                            style: Theme.of(context).textTheme.headline4?.copyWith(
-                                fontSize: 16, color: Theme.of(context).primaryColor),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                ?.copyWith(
+                                    fontSize: 16,
+                                    color: Theme.of(context).primaryColor),
                           ),
                         )
                       ],

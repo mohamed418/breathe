@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grad_proj_ui_test/bloc/cubit.dart';
 import 'package:grad_proj_ui_test/bloc/states.dart';
+
 import '../../../theme/my_theme.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,8 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BreatheCubit, BreatheStates>(
-      listener: (context, state){},
-      builder: (context, state){
+      listener: (context, state) {},
+      builder: (context, state) {
         var cubit = BreatheCubit.get(context);
         return Scaffold(
           backgroundColor: MyTheme.lightBlue,
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCornerRadius: 24,
             curve: Curves.easeIn,
             iconSize: 30,
-            onItemSelected: (index) => cubit.changeBot(index),
+            onItemSelected: (index) => cubit.changeBot(index, context),
             items: cubit.tabs,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
           ),

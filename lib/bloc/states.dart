@@ -1,76 +1,74 @@
 import '../models/add_new_patient_model.dart';
 import '../models/create_medical_record_model.dart';
 import '../models/get_all_patients.dart';
+import '../models/get_profile_data.dart';
 import '../models/login_model.dart';
 
-abstract class BreatheStates{}
+abstract class BreatheStates {}
 
-class BreatheInitialState extends BreatheStates{}
+class BreatheInitialState extends BreatheStates {}
 
-class ChangeBotNavState extends BreatheStates{}
+class ChangeBotNavState extends BreatheStates {}
 
-class ChangeBottomNavState extends BreatheStates{}
+class ChangeBottomNavState extends BreatheStates {}
 
-class TopShopLoadingState extends BreatheStates{}
+class TopShopLoadingState extends BreatheStates {}
 
-class TopShopSuccessState extends BreatheStates{}
+class TopShopSuccessState extends BreatheStates {}
 
-class TopShopErrorState extends BreatheStates{}
+class TopShopErrorState extends BreatheStates {}
 
-class LoginSuccessState extends BreatheStates{
+class LoginSuccessState extends BreatheStates {
   final LoginModel loginModel;
   LoginSuccessState(this.loginModel);
 }
 
-class LoginLoadingState extends BreatheStates{}
+class LoginLoadingState extends BreatheStates {}
 
-class LoginErrorState extends BreatheStates{
+class LoginErrorState extends BreatheStates {
   final dynamic loginModel;
   final String error;
 
   LoginErrorState([this.loginModel, this.error = '']);
 }
 
-class AddNewPatientLoadingState extends BreatheStates{}
+class AddNewPatientLoadingState extends BreatheStates {}
 
-class AddNewPatientSuccessState extends BreatheStates{
+class AddNewPatientSuccessState extends BreatheStates {
   final AddNewPatientModel addNewPatientModel;
   AddNewPatientSuccessState(this.addNewPatientModel);
 }
 
-class AddNewPatientErrorState extends BreatheStates{
+class AddNewPatientErrorState extends BreatheStates {
   final String error;
 
   AddNewPatientErrorState(this.error);
-
 }
 
-class GetAllPatientsLoadingState extends BreatheStates{}
+class GetAllPatientsLoadingState extends BreatheStates {}
 
-class GetAllPatientsSuccessState extends BreatheStates{
+class GetAllPatientsSuccessState extends BreatheStates {
   final GetAllPatientsModel addNewPatientsModel;
   GetAllPatientsSuccessState(this.addNewPatientsModel);
 }
 
-class GetAllPatientsErrorState extends BreatheStates{
+class GetAllPatientsErrorState extends BreatheStates {
   final String error;
 
   GetAllPatientsErrorState(this.error);
-
 }
 
-class SearchPatientsLoadingState extends BreatheStates{}
+class SearchPatientsLoadingState extends BreatheStates {}
 
-class SearchPatientsSuccessState extends BreatheStates{
+class SearchPatientsSuccessState extends BreatheStates {
   // final SearchPatientsModel addNewPatientsModel;
   // SearchPatientsSuccessState(this.addNewPatientsModel);
 }
 
-class SearchPatientsErrorState extends BreatheStates{
+class SearchPatientsErrorState extends BreatheStates {
   final String error;
 
   SearchPatientsErrorState(this.error);
-
 }
 
 class ForgetPasswordLoadingState extends BreatheStates {}
@@ -103,18 +101,17 @@ class ResetPassErrorState extends BreatheStates {
   ResetPassErrorState(this.message);
 }
 
-class CreateMedicalRecordLoadingState extends BreatheStates{}
+class CreateMedicalRecordLoadingState extends BreatheStates {}
 
-class CreateMedicalRecordSuccessState extends BreatheStates{
+class CreateMedicalRecordSuccessState extends BreatheStates {
   final CreateMedicalRecordModel addNewPatientModel;
   CreateMedicalRecordSuccessState(this.addNewPatientModel);
 }
 
-class CreateMedicalRecordErrorState extends BreatheStates{
+class CreateMedicalRecordErrorState extends BreatheStates {
   final String error;
 
   CreateMedicalRecordErrorState(this.error);
-
 }
 
 class ReadMedicalRecordLoadingState extends BreatheStates {}
@@ -129,4 +126,51 @@ class ReadMedicalRecordErrorState extends BreatheStates {
   final String errorMessage;
 
   ReadMedicalRecordErrorState(this.errorMessage);
+}
+
+class CreateProfileDataLoadingState extends BreatheStates {}
+
+class CreateProfileDataSuccessState extends BreatheStates {
+  // final String data;
+  //
+  // CreateProfileDataSuccessState(this.data);
+}
+
+class CreateProfileDataErrorState extends BreatheStates {
+  final String errorMessage;
+
+  CreateProfileDataErrorState(this.errorMessage);
+}
+
+class AddProfileImageLoadingState extends BreatheStates {}
+
+class AddProfileImageSuccessState extends BreatheStates {
+  final GetProfileDataModel getProfileDataModel;
+  AddProfileImageSuccessState(this.getProfileDataModel);
+}
+
+class AddProfileImageErrorState extends BreatheStates {
+  final dynamic error;
+  AddProfileImageErrorState(this.error);
+}
+
+class GetProfileDataLoadingState extends BreatheStates {}
+
+class GetProfileDataSuccessState extends BreatheStates {
+  final GetProfileDataModel getProfileDataModel;
+  GetProfileDataSuccessState(this.getProfileDataModel);
+}
+
+class GetProfileDataErrorState extends BreatheStates {
+  final dynamic error;
+  GetProfileDataErrorState(this.error);
+}
+
+class EditProfileDataLoadingState extends BreatheStates {}
+
+class EditProfileDataSuccessState extends BreatheStates {}
+
+class EditProfileDataErrorState extends BreatheStates {
+  final dynamic error;
+  EditProfileDataErrorState(this.error);
 }

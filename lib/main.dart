@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:bloc/bloc.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grad_proj_ui_test/theme/my_theme.dart';
-import 'package:grad_proj_ui_test/ui/screens/onboarding_screen.dart';
+
 import 'bloc/cubit.dart';
 import 'network/local/bloc_observer.dart';
 import 'network/local/cache_helper.dart';
@@ -25,7 +25,9 @@ Future<void> main() async {
   } else {
     widget = LoginScreen();
   }
-  runApp(MyApp(startWidget: widget,));
+  runApp(MyApp(
+    startWidget: widget,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
         theme: MyTheme.lightTheme,
         debugShowCheckedModeBanner: false,
         home: startWidget,
-        // home: const HomeScreen(),
+        // home: const AddImageWidget(),
       ),
     );
   }
@@ -55,5 +57,3 @@ class MyHttpOverrides extends HttpOverrides {
           (X509Certificate cert, String host, int port) => true;
   }
 }
-
-

@@ -4,18 +4,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grad_proj_ui_test/bloc/cubit.dart';
 import 'package:grad_proj_ui_test/bloc/states.dart';
-import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
-import 'package:grad_proj_ui_test/ui/screens/patient_registeriation.dart';
 import 'package:grad_proj_ui_test/modules/signup/signup_screen.dart';
+import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
+import 'package:grad_proj_ui_test/ui/screens/profile_data/add_image.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
+
 import '../../constants/components.dart';
 import '../../network/local/cache_helper.dart';
 import '../components/breathe_background.dart';
 import 'forget_password_screen/first_screen.dart';
-import 'package:motion_toast/motion_toast.dart';
-import 'package:motion_toast/resources/arrays.dart';
 
 class LoginScreen extends StatelessWidget {
   var formLoginKey = GlobalKey<FormState>();
+
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +28,11 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is LoginSuccessState) {
           if (state.loginModel.message == 'Successfull Login') {
-            BreatheCubit.get(context).getAllPatients(
-                CacheHelper.getData(key: 'Token'));
+            BreatheCubit.get(context)
+                .getAllPatients(CacheHelper.getData(key: 'Token'));
             navigateAndFinish(
-              PatientRegistrationScreen(),
+              // PatientRegistrationScreen(),
+              AddImageWidget(),
               context,
             );
           }
