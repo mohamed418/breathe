@@ -239,3 +239,60 @@ class AccountTab extends StatelessWidget {
     );
   }
 }
+// cubit.getProfileDataModel!.profiledata.doctorImage != null
+// ? Container(
+// width: size.width * 0.46,
+// height: size.width * 0.46,
+// margin: const EdgeInsets.only(
+// top: 24.0,
+// bottom: 20.0,
+// ),
+// decoration: BoxDecoration(
+// gradient: gradient,
+// shape: BoxShape.circle,
+// ),
+// child: Padding(
+// padding: const EdgeInsets.all(4.5),
+// child: Container(
+// decoration: const BoxDecoration(
+// shape: BoxShape.circle,
+// ),
+// child: ClipOval(
+// child: Image(
+// image: NetworkImage(
+// '${cubit.getProfileDataModel!.profiledata.doctorImage}'),
+// // image:NetworkImage('${getProfileImageModel!.lastImg!}'.replaceAll('[', '').replaceAll(']', '')),
+// //image:NetworkImage('http://res.cloudinary.com/dgn4qwa6m/image/upload/v1674477825/yhmse8u1ujvjoomkj4em.jpg'),
+// fit: BoxFit.fill,
+// ),
+// ),
+// ),
+// ),
+// )
+//     : Container(
+// width: size.width * 0.46,
+// height: size.width * 0.46,
+// margin: const EdgeInsets.only(
+// top: 24.0,
+// bottom: 20.0,
+// ),
+// decoration: BoxDecoration(
+// gradient: gradient,
+// shape: BoxShape.circle,
+// ),
+// child: Padding(
+// padding: const EdgeInsets.all(2.2),
+// child: Container(
+// height: 80,
+// decoration: const BoxDecoration(
+// shape: BoxShape.circle,
+// image: DecorationImage(
+// fit: BoxFit.fill,
+// image: NetworkImage(
+// "https://cdn.icon-icons.com/icons2/3150/PNG/512/user_profile_male_icon_192702.png",
+// ),
+// ),
+// ),
+// ),
+// ),
+// ),

@@ -25,8 +25,8 @@ class PatientsTab extends StatelessWidget {
         // Size size = MediaQuery.of(context).size;
         var cubit = BreatheCubit.get(context);
         dynamic i = 1;
-        InkWell buildPatientItem(
-            BuildContext context, name, phoneNumber, address, gender, i) {
+        InkWell buildPatientItem(BuildContext context, name, phoneNumber,
+            address, gender, i, patientId) {
           Size size = MediaQuery.of(context).size;
           return InkWell(
             onLongPress: () {
@@ -70,6 +70,7 @@ class PatientsTab extends StatelessWidget {
                       phoneNumber: phoneNumber,
                       address: address,
                       gender: gender,
+                      patientId: patientId,
                     );
                   },
                 ),
@@ -188,6 +189,7 @@ class PatientsTab extends StatelessWidget {
                                   .getAllPatientsModel!.patients[index].address,
                               cubit.getAllPatientsModel!.patients[index].gender,
                               '${i + index}',
+                              cubit.getAllPatientsModel!.patients[index].id,
                             ),
                           ),
                         ),

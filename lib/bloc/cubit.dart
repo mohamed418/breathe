@@ -4,7 +4,9 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grad_proj_ui_test/constants/components.dart';
 import 'package:grad_proj_ui_test/constants/transitions.dart';
+import 'package:grad_proj_ui_test/models/search_patient_model.dart';
 import 'package:grad_proj_ui_test/ui/screens/login_screen.dart';
 
 import '../models/add_new_patient_model.dart';
@@ -13,6 +15,7 @@ import '../models/forget_password_model.dart';
 import '../models/get_all_patients.dart';
 import '../models/get_profile_data.dart';
 import '../models/login_model.dart';
+import '../models/read_medical_record_model.dart';
 import '../network/local/cache_helper.dart';
 import '../ui/screens/forget_password_screen/create_new_password_screen.dart';
 import '../ui/screens/forget_password_screen/otp_screen.dart';
@@ -21,6 +24,8 @@ import '../ui/screens/home/home_tab/home_tab.dart';
 import '../ui/screens/home/list_of_patients/patients_tab.dart';
 import '../ui/screens/home/my_account/account_tab.dart';
 import '../ui/screens/home/symptoms/symptoms_tab.dart';
+import '../ui/screens/patient_details/medical_record_screen.dart';
+import '../ui/screens/profile_data/create_profile_data.dart';
 import 'states.dart';
 
 class BreatheCubit extends Cubit<BreatheStates> {
@@ -241,6 +246,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
     }
   }
 
+  SearchPatientModel? searchPatientModel;
   Future<void> searchPatients(String token, String fullName) async {
     emit(SearchPatientsLoadingState());
 
@@ -251,12 +257,53 @@ class BreatheCubit extends Cubit<BreatheStates> {
 
     try {
       final response = await dio.get('user/patient/$fullName');
-      emit(SearchPatientsSuccessState());
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        final searchPatientModel = SearchPatientModel.fromJson(responseData);
+        emit(SearchPatientsSuccessState(searchPatientModel));
+      } else {
+        emit(SearchPatientsErrorState(
+            "Error searching patients. Status code: ${response.statusCode}"));
+      }
     } catch (e) {
       emit(SearchPatientsErrorState(e.toString()));
       debugPrint('Error getting patients: ${e.toString()}');
     }
   }
+  // Future<void> searchPatients(String token, String fullName) async {
+  //   emit(SearchPatientsLoadingState());
+  //
+  //   final dio = Dio(BaseOptions(
+  //     baseUrl: 'http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/',
+  //     headers: {'Authorization': 'Bearer $token'},
+  //   ));
+  //
+  //   try {
+  //     final response = await dio.get('user/patient/$fullName');
+  //     final responseData = response.data;
+  //
+  //     if (response.statusCode == 200) {
+  //       // Check if response data contains valid model data
+  //       if (responseData['data'] != null) {
+  //         // Search successful, parse the response data into model
+  //         searchPatientModel =
+  //             SearchPatientModel.fromJson(responseData['data']);
+  //         emit(SearchPatientsSuccessState(searchPatientModel!));
+  //       } else {
+  //         // Search failed, emit error state with a message
+  //         emit(SearchPatientsErrorState('Invalid response data'));
+  //       }
+  //     } else {
+  //       // Search failed, emit error state with the error message
+  //       final errorMessage = responseData['message'] as String;
+  //       emit(SearchPatientsErrorState(errorMessage));
+  //     }
+  //   } catch (e) {
+  //     // Error occurred, emit error state with the exception message
+  //     emit(SearchPatientsErrorState(e.toString()));
+  //     debugPrint('Error getting patients: ${e.toString()}');
+  //   }
+  // }
 
   Future<void> forgetPassword(String email, context) async {
     emit(ForgetPasswordLoadingState());
@@ -378,21 +425,34 @@ class BreatheCubit extends Cubit<BreatheStates> {
       CreateMedicalRecordModel addNewPatient =
           CreateMedicalRecordModel.fromJson(response.data);
       emit(CreateMedicalRecordSuccessState(addNewPatient));
+      getAllPatients(CacheHelper.getData(key: 'Token'));
+      Navigator.pop(context);
+      Navigator.pop(context);
+      buildSnackBar('Your medical record created successfully', context, 2);
     } catch (e) {
       emit(CreateMedicalRecordErrorState(e.toString()));
       debugPrint('Error Creating Medical Record: ${e.toString()}');
     }
   }
 
-  Future<void> readMedicalRecord(String patientId, token) async {
+  ReadMedicalRecordModel? readMedicalRecordModel;
+  Future<void> readMedicalRecord(String patientId, token, context) async {
     emit(ReadMedicalRecordLoadingState());
     try {
       final dio = Dio();
       final response = await dio.get(
-          "http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/user/patients/$patientId/medical_records",
-          options: Options(headers: {"Authorization": "Bearer $token"}));
+        "http://ec2-13-41-193-30.eu-west-2.compute.amazonaws.com/user/patients/$patientId/medical_records",
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
       if (response.statusCode == 200) {
-        emit(ReadMedicalRecordSuccessState(response.data));
+        final responseData = response.data as Map<String,
+            dynamic>; // Cast response data to Map<String, dynamic>
+        readMedicalRecordModel = ReadMedicalRecordModel.fromJson(responseData);
+        emit(ReadMedicalRecordSuccessState());
+        Navigator.push(
+          context,
+          CustomPageRoute1(child: const MedicalRecordScreen()),
+        );
       } else {
         emit(ReadMedicalRecordErrorState(
             "Error reading medical record. Status code: ${response.statusCode}"));
@@ -443,15 +503,25 @@ class BreatheCubit extends Cubit<BreatheStates> {
         // Success
         final responseData = response.data;
         getProfileDataModel = GetProfileDataModel.fromJson(responseData);
-        Navigator.push(context, CustomPageRoute1(child: const AccountTab()));
+        Navigator.push(context, CustomPageRoute1(child: const HomeScreen()));
         emit(GetProfileDataSuccessState(getProfileDataModel!));
       } else {
         // Error
         emit(GetProfileDataErrorState('Failed to fetch profile data'));
+        Navigator.push(
+            context,
+            CustomPageRoute1(
+              child: const AddImageWidget(),
+            ));
       }
     } catch (error) {
       emit(GetProfileDataErrorState(
           'An error occurred while fetching profile data'));
+      Navigator.push(
+          context,
+          CustomPageRoute1(
+            child: const AddImageWidget(),
+          ));
       debugPrint('Error deleting patient: ${error.toString()}');
     }
   }

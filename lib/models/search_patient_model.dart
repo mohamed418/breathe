@@ -1,14 +1,14 @@
-class GetAllPatientsModel {
-  GetAllPatientsModel({
+class SearchPatientModel {
+  SearchPatientModel({
     required this.status,
     required this.message,
     required this.patients,
   });
-  late final bool status;
+  late final dynamic status;
   late final dynamic message;
   late final List<Patients> patients;
 
-  GetAllPatientsModel.fromJson(Map<dynamic, dynamic> json) {
+  SearchPatientModel.fromJson(Map<dynamic, dynamic> json) {
     status = json['status'];
     message = json['message'];
     patients =
@@ -33,7 +33,7 @@ class Patients {
     required this.mobileNumber,
     required this.medicalRecords,
   });
-  late final int id;
+  late final dynamic id;
   late final dynamic fullName;
   late final dynamic gender;
   late final dynamic address;
@@ -65,17 +65,21 @@ class Patients {
 
 class MedicalRecords {
   MedicalRecords({
-    required this.message,
+    required this.result,
+    required this.date,
   });
-  late final dynamic message;
+  late final dynamic result;
+  late final dynamic date;
 
   MedicalRecords.fromJson(Map<dynamic, dynamic> json) {
-    message = json['message'];
+    result = json['result'];
+    date = json['date'];
   }
 
   Map<dynamic, dynamic> toJson() {
     final _data = <dynamic, dynamic>{};
-    _data['message'] = message;
+    _data['result'] = result;
+    _data['date'] = date;
     return _data;
   }
 }

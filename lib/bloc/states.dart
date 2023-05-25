@@ -3,6 +3,7 @@ import '../models/create_medical_record_model.dart';
 import '../models/get_all_patients.dart';
 import '../models/get_profile_data.dart';
 import '../models/login_model.dart';
+import '../models/search_patient_model.dart';
 
 abstract class BreatheStates {}
 
@@ -61,14 +62,15 @@ class GetAllPatientsErrorState extends BreatheStates {
 class SearchPatientsLoadingState extends BreatheStates {}
 
 class SearchPatientsSuccessState extends BreatheStates {
-  // final SearchPatientsModel addNewPatientsModel;
-  // SearchPatientsSuccessState(this.addNewPatientsModel);
+  final SearchPatientModel searchResult;
+
+  SearchPatientsSuccessState(this.searchResult);
 }
 
 class SearchPatientsErrorState extends BreatheStates {
-  final String error;
+  final String errorMessage;
 
-  SearchPatientsErrorState(this.error);
+  SearchPatientsErrorState(this.errorMessage);
 }
 
 class ForgetPasswordLoadingState extends BreatheStates {}
@@ -116,11 +118,7 @@ class CreateMedicalRecordErrorState extends BreatheStates {
 
 class ReadMedicalRecordLoadingState extends BreatheStates {}
 
-class ReadMedicalRecordSuccessState extends BreatheStates {
-  final Map<String, dynamic> medicalRecords;
-
-  ReadMedicalRecordSuccessState(this.medicalRecords);
-}
+class ReadMedicalRecordSuccessState extends BreatheStates {}
 
 class ReadMedicalRecordErrorState extends BreatheStates {
   final String errorMessage;
@@ -173,4 +171,18 @@ class EditProfileDataSuccessState extends BreatheStates {}
 class EditProfileDataErrorState extends BreatheStates {
   final dynamic error;
   EditProfileDataErrorState(this.error);
+}
+
+class PredictResultLoadingState extends BreatheStates {}
+
+class PredictResultSuccessState extends BreatheStates {
+  final String result;
+
+  PredictResultSuccessState(this.result);
+}
+
+class PredictResultErrorState extends BreatheStates {
+  final String errorMessage;
+
+  PredictResultErrorState(this.errorMessage);
 }

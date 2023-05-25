@@ -6,7 +6,6 @@ import 'package:grad_proj_ui_test/bloc/cubit.dart';
 import 'package:grad_proj_ui_test/bloc/states.dart';
 import 'package:grad_proj_ui_test/modules/signup/signup_screen.dart';
 import 'package:grad_proj_ui_test/ui/components/custom_button.dart';
-import 'package:grad_proj_ui_test/ui/screens/profile_data/add_image.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
@@ -30,11 +29,7 @@ class LoginScreen extends StatelessWidget {
           if (state.loginModel.message == 'Successfull Login') {
             BreatheCubit.get(context)
                 .getAllPatients(CacheHelper.getData(key: 'Token'));
-            navigateAndFinish(
-              // PatientRegistrationScreen(),
-              AddImageWidget(),
-              context,
-            );
+            BreatheCubit.get(context).getProfileData(context);
           }
         }
         if (state is LoginErrorState) {

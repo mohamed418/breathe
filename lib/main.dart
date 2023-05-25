@@ -43,7 +43,8 @@ class MyApp extends StatelessWidget {
         theme: MyTheme.lightTheme,
         debugShowCheckedModeBanner: false,
         home: startWidget,
-        // home: const AddImageWidget(),
+        // home: LoginScreen(),
+        // home: AudioRecorderPage(),
       ),
     );
   }
