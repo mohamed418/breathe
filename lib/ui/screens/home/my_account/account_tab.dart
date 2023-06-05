@@ -47,7 +47,7 @@ class AccountTab extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Text(
-                          cubit.getProfileDataModel!.profiledata.doctorname,
+                          'DR:${cubit.getProfileDataModel!.profiledata.doctorname}'.replaceAll('Dr.', ''),
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium

@@ -24,14 +24,25 @@ class MedicalRecordScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Your Medical Record is',
+                      'Your Medical Records',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      cubit.readMedicalRecordModel!.patients[0].result,
-                      style: const TextStyle(fontSize: 20, color: Colors.blue),
+                    GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      mainAxisSpacing: 1,
+                      crossAxisSpacing: 1,
+                      childAspectRatio: 1 / .2,
+                      crossAxisCount: 1,
+                      children: List.generate(
+                        cubit.readMedicalRecordModel!.patients.length,
+                            (index) => Text(
+                              cubit.readMedicalRecordModel!.patients[index].result,
+                              style: const TextStyle(fontSize: 20, color: Colors.blue),
+                            ),
+                      ),
                     ),
                   ],
                 ),

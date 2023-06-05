@@ -305,6 +305,7 @@ class BreatheCubit extends Cubit<BreatheStates> {
   //   }
   // }
 
+
   Future<void> forgetPassword(String email, context) async {
     emit(ForgetPasswordLoadingState());
     try {
