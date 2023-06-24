@@ -1,142 +1,118 @@
-import 'dart:async';
+import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class AudioRecorderPage extends StatefulWidget {
-  @override
-  _AudioRecorderPageState createState() => _AudioRecorderPageState();
-}
+final pathToSaveAudio = 'audio_example.aac';
 
-class _AudioRecorderPageState extends State<AudioRecorderPage> {
-  bool _isRecording = false;
-  String _recordFilePath = '';
-  final AudioPlayer _audioPlayer = AudioPlayer();
+class SoundRecorder{
 
-  @override
-  void initState() {
-    super.initState();
-    _requestPermissions();
+  FlutterSoundRecorder? _audioRecorder;
+  bool _isRecorderInitialised = false;
+
+  bool get isRecording => _audioRecorder!.isRecording;
+
+  Future init()async{
+    _audioRecorder = FlutterSoundRecorder();
+
+    final status = await Permission.microphone.request();
+    if(status != PermissionStatus.granted){
+      throw RecordingPermissionException('Microphone Permission is denied');
+    }
+
+    await _audioRecorder!.openAudioSession();
+    _isRecorderInitialised = true;
   }
 
-  Future<void> _requestPermissions() async {
-    final microphoneStatus = await Permission.microphone.request();
-    final storageStatus = await Permission.storage.request();
-    final mediaLibraryStatus = await Permission.mediaLibrary.request();
+  Future dispose()async{
+    if(!_isRecorderInitialised)return;
+    _audioRecorder!.closeAudioSession();
+    _audioRecorder = null;
+    _isRecorderInitialised = false;
+  }
 
-    if (microphoneStatus.isGranted &&
-        storageStatus.isGranted &&
-        mediaLibraryStatus.isGranted) {
-      // Permissions have been granted, perform necessary actions
-      // for accessing the microphone, storage, and media library.
+  Future _record()async{
+    if(!_isRecorderInitialised)return;
+    final filePath = await getFilePath();
+    _audioRecorder!.startRecorder(toFile: pathToSaveAudio);
+  }
+  Future _stop()async{
+    if(!_isRecorderInitialised)return;
+    _audioRecorder!.stopRecorder();
+  }
+
+  Future toggleRecording() async{
+    if(_audioRecorder!.isStopped){
+      await _record();
+    }else{
+      await _stop();
+    }
+  }
+
+  Future<String> getRecordedFilePath() async {
+    if (!_isRecorderInitialised) return '';
+
+    final filePath = await getFilePath();
+    final file = File(filePath);
+    if (await file.exists()) {
+      return filePath;
     } else {
-      // Permissions have been denied or permanently denied. Show a message or disable
-      // features that require access to the microphone, storage, and media library.
-      if (microphoneStatus.isPermanentlyDenied ||
-          storageStatus.isPermanentlyDenied ||
-          mediaLibraryStatus.isPermanentlyDenied) {
-        // Permissions have been permanently denied by the user.
-        // Show a dialog or prompt to allow permissions manually.
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Permissions Required'),
-              content: Text(
-                  'Please grant the necessary permissions to access the microphone, storage, and media library.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    openAppSettings();
-                  },
-                  child: Text('Open Settings'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    // Handle the case where the user chooses not to open settings
-                    // and provide an alternative flow or display an informative message.
-                  },
-                  child: Text('Cancel'),
-                ),
-              ],
-            );
-          },
-        );
-      }
+      return '';
     }
   }
 
-  Future<String> _generateFilePath() async {
+
+  Future<String> getFilePath() async {
     final directory = await getApplicationDocumentsDirectory();
-    return '${directory.path}/recording.wav';
-  }
-
-  void _startRecording() async {
-    final filePath = await _generateFilePath();
-    setState(() {
-      _isRecording = true;
-      _recordFilePath = filePath;
-    });
-    // Start recording logic
-  }
-
-  void _stopRecording() {
-    setState(() {
-      _isRecording = false;
-    });
-    // Stop recording logic
-  }
-
-  void _playRecording() {
-    if (_recordFilePath.isNotEmpty) {
-      dynamic uri = Uri.parse(_recordFilePath);
-      _audioPlayer.play(
-        uri,
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Audio Recorder'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_recordFilePath.isNotEmpty) ...[
-              Text('Recorded File Path: $_recordFilePath'),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _playRecording,
-                child: const Text('Play Recording'),
-              ),
-            ],
-            const SizedBox(height: 20),
-            _isRecording
-                ? ElevatedButton(
-                    onPressed: _stopRecording,
-                    child: const Text('Stop Recording'),
-                  )
-                : ElevatedButton(
-                    onPressed: _startRecording,
-                    child: const Text('Start Recording'),
-                  ),
-          ],
-        ),
-      ),
-    );
+    return '${directory.path}/$pathToSaveAudio';
   }
 }
+// import 'package:flutter_sound_lite/flutter_sound.dart';
+// import 'package:permission_handler/permission_handler.dart';
+//
+// final pathToSaveAudio = 'audio_example.aac';
+//
+// class SoundRecorder{
+//
+//   FlutterSoundRecorder? _audioRecorder;
+//   bool _isRecorderInitialised = false;
+//
+//   bool get isRecording => _audioRecorder!.isRecording;
+//
+//   Future init()async{
+//     _audioRecorder = FlutterSoundRecorder();
+//
+//     final status = await Permission.microphone.request();
+//     if(status != PermissionStatus.granted){
+//       throw RecordingPermissionException('Microphone Permission is denied');
+//     }
+//
+//     await _audioRecorder!.openAudioSession();
+//     _isRecorderInitialised = true;
+//   }
+//
+//   Future dispose()async{
+//     if(!_isRecorderInitialised)return;
+//     _audioRecorder!.closeAudioSession();
+//     _audioRecorder = null;
+//     _isRecorderInitialised = false;
+//   }
+//
+//   Future _record()async{
+//     if(!_isRecorderInitialised)return;
+//     _audioRecorder!.startRecorder(toFile: pathToSaveAudio);
+//   }
+//   Future _stop()async{
+//     if(!_isRecorderInitialised)return;
+//     _audioRecorder!.stopRecorder();
+//   }
+//
+//   Future toggleRecoding() async{
+//     if(_audioRecorder!.isStopped){
+//       await _record();
+//     }else{
+//       await _stop();
+//     }
+//   }
+// }
