@@ -1,9 +1,8 @@
 import 'dart:io';
-
+import 'package:buildcondition/buildcondition.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../bloc/cubit.dart';
 import '../../../constants/components.dart';
 import '../../../network/local/cache_helper.dart';
@@ -13,6 +12,7 @@ late String result;
 // Define the states
 abstract class PredictResultState {}
 
+class PredictResultInitialState extends PredictResultState {}
 class PredictResultLoadingState extends PredictResultState {}
 
 class PredictResultSuccessState extends PredictResultState {
@@ -30,9 +30,9 @@ class PredictResultErrorState extends PredictResultState {
 // Define the cubit
 class PredictResultCubit extends Cubit<PredictResultState> {
   final Dio dio = Dio();
-  final String baseUrl = 'http://68.183.77.77:8000/predict';
+  final String baseUrl = 'https://dolphin-app-9u8lj.ondigitalocean.app/predict';
 
-  PredictResultCubit() : super(PredictResultLoadingState());
+  PredictResultCubit() : super(PredictResultInitialState());
 
   void predictAudio(File audioFile, context, patientId) async {
     emit(PredictResultLoadingState());
@@ -55,6 +55,7 @@ class PredictResultCubit extends Cubit<PredictResultState> {
       }
     } catch (error) {
       emit(PredictResultErrorState('Error occurred: $error'));
+      print(error);
     }
   }
 }
@@ -129,13 +130,19 @@ class ResultScreen extends StatelessWidget {
                       style: const TextStyle(fontSize: 18),
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        context
-                            .read<PredictResultCubit>()
-                            .predictAudio(audioFile, context, patientId);
-                      },
-                      child: const Text('Predict Audio'),
+                    BuildCondition(
+                      condition: state is! PredictResultLoadingState,
+                      builder:(context)=> ElevatedButton(
+                        onPressed: () {
+                          print('id id id id id id : ${patientId}');
+                          print('audioFile : ${audioFile}');
+                          context
+                              .read<PredictResultCubit>()
+                              .predictAudio(audioFile, context, patientId);
+                        },
+                        child: const Text('Predict Audio'),
+                      ),
+                      fallback: (context)=>const Center(child: CircularProgressIndicator(),),
                     ),
                   ],
                 ),

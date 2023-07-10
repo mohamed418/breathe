@@ -182,7 +182,7 @@ class PredictResultSuccessState extends BreatheStates {
 }
 
 class PredictResultErrorState extends BreatheStates {
-  final String errorMessage;
+  final String error;
 
-  PredictResultErrorState(this.errorMessage);
+  PredictResultErrorState(this.error);
 }

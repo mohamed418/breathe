@@ -1,15 +1,15 @@
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grad_proj_ui_test/theme/my_theme.dart';
+import 'package:grad_proj_ui_test/ui/screens/login_screen.dart';
+import 'package:grad_proj_ui_test/ui/screens/patient_registeriation.dart';
 import 'bloc/cubit.dart';
 import 'modules/recording/sound_player.dart';
-import 'modules/recording/sound_recorder.dart';
 import 'network/local/bloc_observer.dart';
 import 'network/local/cache_helper.dart';
 import 'network/remote/dio_helper.dart';
-import 'ui/screens/login_screen.dart';
-import 'ui/screens/patient_registeriation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,17 +33,25 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   final Widget? startWidget;
 
-  MyApp({super.key, this.startWidget});
+  MyApp({Key? key, this.startWidget}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => BreatheCubit(),
+    return MultiBlocProvider(
+      providers: [
+        // Add the provider for BreatheCubit
+        BlocProvider<BreatheCubit>(
+          create: (context) => BreatheCubit(),
+        ),
+        BlocProvider<PredictResultCubit>(
+          create: (context) => PredictResultCubit(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Breathe App',
         theme: MyTheme.lightTheme,
         debugShowCheckedModeBanner: false,
         // home: startWidget,
-        // home: LoginScreen(),
         home: SoundPlayerScreen(),
       ),
     );
